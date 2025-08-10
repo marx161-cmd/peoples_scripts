@@ -3,10 +3,11 @@
 Cross‑platform Bash helpers that work on **Termux (Android)** and **Ubuntu/Linux**.  
 All scripts auto‑detect the platform and write to the correct user folders via a shared helper: `~/.scripts/common.sh`.
 
-Tested on:
+for:
 - Android 13 (Termux v0.118+)
 - Ubuntu 22.04+
-- Works with YouTube, general webpages, livestreams, and large downloads
+- STILL WORK IN PROGRESS | MOST SCRIPTS WILL NEED FURTHER TWEAKING
+- THE SANDBOX_WIP FOLDER IS NOT PART OF THE INSTALL
 
 ---
 
