@@ -1,0 +1,108 @@
+# Gaza High-Res Imagery Scraper – Termux Installation Guide (v2, Optimized)
+
+This guide explains how to set up and run the updated Gaza imagery scraper on Android using **Termux** from F-Droid, with all fixes, keyword expansions, and feed list updates implemented.
+
+---
+
+## 1. Install Termux and Add-Ons
+1. Download **Termux** from F-Droid: https://f-droid.org/en/packages/com.termux/
+2. Also install:
+   - **Termux:API**
+   - **Termux:Widget** (optional, for quick commands)
+
+---
+
+## 2. Prepare Termux
+```bash
+pkg update && pkg upgrade -y
+pkg install python git unzip libxml2 libxslt clang -y
+```
+
+These packages are required for building some dependencies (`lxml`).
+
+---
+
+## 3. Create Project Folder
+```bash
+cd ~
+mkdir gaza_scraper && cd gaza_scraper
+```
+
+---
+
+## 4. Transfer the Script
+- Download the latest `gaza_scraper_termux_v2.zip` (from the provided source).
+- Move it to your Termux home directory or `/storage/emulated/0/Download`.
+
+**Unzip it:**
+```bash
+unzip /storage/emulated/0/Download/gaza_scraper_termux_v2.zip -d ~/gaza_scraper
+```
+
+---
+
+## 5. Create and Activate Virtual Environment
+```bash
+python -m venv venv
+source venv/bin/activate
+```
+
+---
+
+## 6. Install Dependencies
+```bash
+pip install --upgrade pip
+pip install requests beautifulsoup4 python-dateutil lxml
+```
+
+If you get build errors for `lxml`, make sure you installed `libxml2` and `libxslt` earlier.
+
+---
+
+## 7. Set Output Directory
+The scraper will save images here:
+```
+/storage/emulated/0/Pictures/gaza_scraped
+```
+Create it:
+```bash
+mkdir -p /storage/emulated/0/Pictures/gaza_scraped
+```
+
+Export the path for the session:
+```bash
+export GAZA_SCRAPER_DIR="/storage/emulated/0/Pictures/gaza_scraped"
+```
+
+---
+
+## 8. Run the Scraper
+**Bellingcat & Extended Feeds:**
+```bash
+python social_scrape_termux.py
+```
+
+**Nitter Feeds (Twitter Mirror):**
+```bash
+python social_scrape_nitter.py
+```
+
+---
+
+## 9. Notes
+- Feeds list already expanded with extra sources.
+- Keywords broadened for better coverage.
+- Can be re-run anytime, new files are saved without overwriting old ones.
+- For permanent environment variable, add this line to `~/.bashrc`:
+```bash
+export GAZA_SCRAPER_DIR="/storage/emulated/0/Pictures/gaza_scraped"
+```
+
+---
+
+## 10. Troubleshooting
+- **No images from Nitter** → The mirror instance may be down; try another Nitter base URL in the script.
+- **lxml build fails** → Ensure you have `libxml2` and `libxslt` installed, then re-run `pip install lxml`.
+
+---
+**Last Updated:** 2025-08-08

@@ -1,0 +1,10 @@
+# Curated OSINT / investigative pages (edit as needed)
+https://www.bellingcat.com/tag/gaza/
+https://www.bellingcat.com/news/2024/08/27/satellite-imagery-shows-vast-destruction-in-rafah/
+https://forensic-architecture.org/investigation/humanitarian-violence-in-gaza
+https://forensic-architecture.org/investigation/destruction-of-medical-infrastructure-in-gaza
+https://unosat.org/products/3984
+https://interactive.aljazeera.com/aje/2024/gaza-before-after-satellite-images/
+https://www.bbc.com/news/topics/cp7r8vgl2pgt/gaza-strip
+https://www.amnesty.org/en/latest/news/2025/06/satellite-imagery-reveals-total-razing-of-khuzaa-in-may-2025-in-further-evidence-of-israels-wanton-destruction-and-genocide-in-gaza/
+https://www.lemonde.fr/en/international/article/2025/07/28/gazan-city-of-khan-yunis-is-almost-completely-leveled-satellite-images-show_6743817_4.html

@@ -1,0 +1,11 @@
+# Ignore temporary files
+*.tmp
+*.log
+*.part
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore downloaded subtitles
+*.vtt

@@ -1,0 +1,91 @@
+#!/usr/bin/env bash
+# newscript — create ready-to-run scripts in ~/scripts
+set -euo pipefail
+IFS=$'\n\t'
+
+usage() {
+  cat <<'H'
+Usage:
+  newscript [--py|--sh] [-f|--force] [-n|--noedit] <name>
+
+Examples:
+  newscript --py tornado.py
+  newscript --sh backup.sh
+  newscript mytool.sh         # bash by default
+  newscript --py mytool       # python skeleton without .py if you want
+
+Options:
+  --py            Use Python skeleton
+  --sh            Use Bash skeleton (default)
+  -f, --force     Overwrite if file exists
+  -n, --noedit    Do not open editor after creating
+  -h, --help      Show this help
+H
+}
+
+# defaults
+LANGUAGE="sh"
+FORCE=0
+EDIT=1
+EDITOR="${EDITOR:-nano}"
+NAME=""
+
+# parse args
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --py) LANGUAGE="py"; shift ;;
+    --sh) LANGUAGE="sh"; shift ;;
+    -f|--force) FORCE=1; shift ;;
+    -n|--noedit) EDIT=0; shift ;;
+    -h|--help) usage; exit 0 ;;
+    *) NAME="$1"; shift ;;
+  esac
+done
+
+[[ -z "${NAME}" ]] && { usage; exit 1; }
+
+# infer language from extension if not explicitly set
+case "$NAME" in
+  *.py) LANGUAGE="py" ;;
+  *.sh) LANGUAGE="sh" ;;
+esac
+
+TARGET="$HOME/scripts/$NAME"
+BASENAME="$(basename "$NAME")"
+DATESTAMP="$(date '+%Y-%m-%d')"
+
+mkdir -p "$HOME/scripts"
+
+if [[ -e "$TARGET" && "$FORCE" -ne 1 ]]; then
+  echo "Error: $TARGET already exists. Use --force to overwrite."
+  exit 1
+fi
+
+# write skeleton
+if [[ "$LANGUAGE" == "py" ]]; then
+  cat > "$TARGET" <<EOF
+#!/usr/bin/env python3
+"""
+Script: ${BASENAME}
+Description:
+Author:
+Date: ${DATESTAMP}
+"""
+EOF
+else
+  cat > "$TARGET" <<EOF
+#!/usr/bin/env bash
+# Script: ${BASENAME}
+# Description:
+# Author:
+# Date: ${DATESTAMP}
+
+EOF
+fi
+
+chmod +x "$TARGET"
+echo "Created $TARGET"
+
+if [[ "$EDIT" -eq 1 ]]; then
+  "$EDITOR" "$TARGET"
+fi

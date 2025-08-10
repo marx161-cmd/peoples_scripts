@@ -1,0 +1,71 @@
+#!/bin/bash
+# Save as: /storage/emulated/0/Documents/web_articles/article-saver
+
+# Configuration
+OUTPUT_DIR="/storage/emulated/0/Documents/web_articles"
+TEMP_HTML="/data/data/com.termux/files/usr/tmp/article_temp.html"
+
+# Check URL argument
+if [ -z "$1" ]; then
+    echo "Usage: article-saver <URL>"
+    exit 1
+fi
+
+# Generate filename from title or timestamp
+get_filename() {
+    # Try to extract title from HTML
+    local title=$(curl -sL "$1" | grep -oP '(?<=<title>)[^<]*(?=</title>)' | head -1)
+    if [ -z "$title" ]; then
+        # Use timestamp if title extraction fails
+        date +"article_%Y%m%d-%H%M%S.txt"
+    else
+        # Clean title for filename
+        echo "$title" | tr -cd '[:alnum:] ._-' | tr ' ' '_' | tr -s '_' | sed 's/_$//' | head -c 50
+        echo ".txt"
+    fi
+}
+
+OUTPUT_FILE="$OUTPUT_DIR/$(get_filename "$1")"
+
+# Method 1: Readability + Pandoc (clean extraction)
+if command -v readability &>/dev/null && command -v pandoc &>/dev/null; then
+    if curl -sL "$1" | readability 2>/dev/null > "$TEMP_HTML"; then
+        pandoc "$TEMP_HTML" -t plain -o "$OUTPUT_FILE" 2>/dev/null
+        if [ -s "$OUTPUT_FILE" ]; then
+            rm "$TEMP_HTML"
+            echo "Saved using Readability+Pandoc: $(basename "$OUTPUT_FILE")"
+            exit 0
+        fi
+    fi
+fi
+
+# Method 2: Readability only (fallback)
+if command -v readability &>/dev/null; then
+    if readability "$1" 2>/dev/null > "$OUTPUT_FILE"; then
+        echo "Saved using Readability: $(basename "$OUTPUT_FILE")"
+        exit 0
+    fi
+fi
+
+# Method 3: Lynx (text browser dump)
+if command -v lynx &>/dev/null; then
+    lynx --dump --nolist "$1" 2>/dev/null > "$OUTPUT_FILE"
+    if [ -s "$OUTPUT_FILE" ]; then
+        echo "Saved using Lynx: $(basename "$OUTPUT_FILE")"
+        exit 0
+    fi
+fi
+
+# Method 4: Raw Pandoc (last resort)
+if command -v pandoc &>/dev/null; then
+    curl -sL "$1" | pandoc -f html -t plain -o "$OUTPUT_FILE" 2>/dev/null
+    if [ -s "$OUTPUT_FILE" ]; then
+        echo "Saved using raw Pandoc: $(basename "$OUTPUT_FILE")"
+        exit 0
+    fi
+fi
+
+# All methods failed
+echo "Error: Failed to extract article text" >&2
+rm -f "$OUTPUT_FILE" 2>/dev/null
+exit 1
