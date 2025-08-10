@@ -1,99 +1,193 @@
-# 📲 Termux Script Suite by Marx161-cmd
+# 📲 peoples_scripts
+
+Cross‑platform Bash helpers that work on **Termux (Android)** and **Ubuntu/Linux**.  
+All scripts auto‑detect the platform and write to the correct user folders via a shared helper: `~/.scripts/common.sh`.
 
 Tested on:
-- Android 13 (Oppo Find X2 Pro)
-- Termux v0.118.3
-- All scripts working with various URLs
+- Android 13 (Termux v0.118+)
+- Ubuntu 22.04+
+- Works with YouTube, general webpages, livestreams, and large downloads
 
 ---
 
-## 📦 Included Scripts
+## 📦 Included scripts
 
-### 1. Article Saver (`article-saver.sh`)
-Extract clean article text from any website URL
+### `trans.sh`
+Download **auto‑generated subtitles** from a video and save a clean transcript.
+- Language: `-l en` (default) or `-l de`
+- URL arg or **clipboard** fallback
+- 5‑minute timestamps
+- De‑only transliteration (iconv `//TRANSLIT`)
+- De‑dupes repeated lines  
+**Saves to:** `Documents/Transcripts/<title>.txt`
 
-**Features:**
-- Removes ads/menus
-- Uses multiple extraction methods
-- Outputs to Android Documents folder
+**Usage**
 
-**Usage:**
 ```bash
-./article-saver.sh "https://www.example.com/article"
-```
+trans.sh -l en "https://youtu.be/VIDEO"
+# or
+trans.sh -l de        # uses clipboard if URL omitted
+
+> Termux Widget wrappers (optional):
+Put these tiny wrappers in ~/.shortcuts to get EN/DE buttons:
+
+# trans-e.sh
+#!/usr/bin/env bash
+exec "$HOME/scripts/trans.sh" -l en "$@"
+
+# trans-d.sh
+#!/usr/bin/env bash
+exec "$HOME/scripts/trans.sh" -l de "$@"
+
+Then chmod +x ~/.shortcuts/trans-*.sh.
+---
+
+art.sh
+
+Extracts readable article text (Readability → Pandoc → Lynx → basic strip fallback).
+Saves to: Documents/web_articles/<title>.txt
+
+Usage
+
+art.sh "https://example.com/article"
+# or: art.sh  (uses clipboard if URL omitted)
+
 
 ---
 
-### 2. Transcript Downloaders
+music.sh
 
-#### English Versions:
-- `get-transcript-en.sh` - Manual URL input
-- `get-transcripten.sh` - Auto-fetches URL from clipboard (requires Termux:API)
+Downloads albums/playlists/tracks via yt-dlp, converts to MP3, embeds thumbnail.
+Saves to: Music/<playlist|uploader>/<title>.mp3
 
-#### German Versions:
-- `get-transcript-de.sh` - Manual URL input
-- `get-transcriptde.sh` - Auto-fetches URL from clipboard (requires Termux:API)
+Usage
 
-**Features:**
-- Downloads YouTube subtitles
-- Cleans and formats transcripts
-- Adds 5-minute timestamps
-- Outputs to Documents/Transcripts
+music.sh "https://www.youtube.com/playlist?list=..."
 
-**Usage:**
-```bash
-# Manual version
-./get-transcript-de.sh "https://youtu.be/VIDEO_ID"
-
-# Clipboard version (copies URL from clipboard)
-./get-transcripten.sh
-```
 
 ---
 
-## 🧰 Dependencies
+stream.sh
 
-Install these packages first:
-```bash
-pkg update
-pkg install -y curl lynx pandoc termux-api dos2unix libiconv python
-pip install readability-lxml yt-dlp
-```
+Record livestreams (e.g., YouTube) to MP4.
+Saves to: Videos (Ubuntu) or Movies (Termux/Android)
 
-Don't forget to run:
-```bash
-termux-setup-storage
-```
+Usage
+
+stream.sh "https://www.youtube.com/watch?v=LIVE_ID"
+
 
 ---
 
-## 🔧 Setup Instructions
+dl.sh
 
-1. Clone this repository:
-```bash
-git clone https://github.com/yourusername/termux-scripts.git
-cd termux-scripts
-```
+Aria2c wrapper for big downloads with sane defaults.
+Saves to: Downloads/aria2c/
 
-2. Make scripts executable:
-```bash
+Usage
+
+dl.sh "https://big.example/file.iso" "https://mirror/file.iso"
+
+
+---
+
+🧰 Dependencies
+
+You don’t have to install them manually—setup.sh handles it.
+It installs per‑platform packages and drops the shared helper at ~/.scripts/common.sh.
+
+Termux (Android)
+
+python-yt-dlp, ffmpeg, aria2, lynx, pandoc, nodejs, termux-api, jq
+
+(optional) readability-cli via npm (installed only if npm present)
+
+
+Ubuntu
+
+yt-dlp, ffmpeg, aria2, lynx, pandoc, xdg-user-dirs, xclip, wl-clipboard, nodejs, npm, jq
+
+readability-cli via npm
+
+
+
+---
+
+🚀 Install
+
+git clone https://github.com/marx161-cmd/peoples_scripts.git
+cd peoples_scripts
+
+# Make scripts runnable
 chmod +x *.sh
-```
 
-3. Run the installer:
-```bash
-./install.sh
-```
+# Run setup (installs deps + ~/.scripts/common.sh)
+./setup.sh
+
+# (Optional QoL) Add ~/scripts to PATH so you can run scripts from anywhere
+mkdir -p ~/scripts
+cp -f trans.sh art.sh music.sh stream.sh dl.sh ~/scripts/
+if ! grep -q 'export PATH="$HOME/scripts:$PATH"' ~/.bashrc 2>/dev/null; then
+  echo 'export PATH="$HOME/scripts:$PATH"' >> ~/.bashrc
+  source ~/.bashrc
+fi
+
+Termux storage bridge (first time only):
+
+termux-setup-storage
+
 
 ---
 
-## ⚠️ Important Notes
+🧪 Quick tests
 
-- Clipboard scripts require the [Termux:API app](https://f-droid.org/packages/com.termux.api/)
-- German scripts handle special characters and umlauts
-- All files are saved in Termux shared storage locations
+# Verify helper + paths + clipboard
+bash test-common.sh
+
+# Transcript (clipboard fallback)
+trans.sh -l en
+# Article saver
+art.sh "https://en.wikipedia.org/wiki/Bash_(Unix_shell)"
+# Music
+music.sh "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+# Livestream (when live)
+stream.sh "https://www.youtube.com/watch?v=LIVE_ID"
+# Big download
+dl.sh "https://speed.hetzner.de/1GB.bin"
+
 
 ---
 
-## 📃 License
-MIT License - See [LICENSE.md](LICENSE.md)
+📂 Where files go (auto‑detected)
+
+Documents: ~/Documents (Ubuntu) or ~/storage/shared/Documents (Termux)
+
+Pictures:  ~/Pictures or ~/storage/shared/Pictures
+
+Music:     ~/Music or ~/storage/shared/Music
+
+Videos:    ~/Videos or ~/storage/shared/Movies
+
+Downloads: ~/Downloads or ~/storage/shared/Download
+
+
+All paths come from ~/.scripts/common.sh and must not be hardcoded.
+
+
+---
+
+⚠️ Notes
+
+Clipboard on Termux requires the Termux:API app.
+
+On Wayland/X11 (Ubuntu), clipboard uses wl-paste → xclip → xsel fallback.
+
+termux-setup-storage may “rebuild links”—it never deletes your real files.
+
+
+
+---
+
+📜 License
+
+MIT
