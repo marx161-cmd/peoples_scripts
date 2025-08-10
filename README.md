@@ -13,12 +13,14 @@ Tested on:
 ## 📦 Included scripts
 
 ### `trans.sh`
+
 Download **auto‑generated subtitles** from a video and save a clean transcript.
 - Language: `-l en` (default) or `-l de`
-- URL arg or **clipboard** fallback
+- URL argument or **clipboard** fallback
 - 5‑minute timestamps
-- De‑only transliteration (iconv `//TRANSLIT`)
+- De‑only transliteration (using `iconv //TRANSLIT`)
 - De‑dupes repeated lines  
+
 **Saves to:** `Documents/Transcripts/<title>.txt`
 
 **Usage**
@@ -26,168 +28,190 @@ Download **auto‑generated subtitles** from a video and save a clean transcript
 ```bash
 trans.sh -l en "https://youtu.be/VIDEO"
 # or
-trans.sh -l de        # uses clipboard if URL omitted
+trans.sh -l de        # uses clipboard if URL is omitted
+```
 
-> Termux Widget wrappers (optional):
-Put these tiny wrappers in ~/.shortcuts to get EN/DE buttons:
+> **Termux Widget wrappers (optional):**
 
-# trans-e.sh
-#!/usr/bin/env bash
-exec "$HOME/scripts/trans.sh" -l en "$@"
+Place these tiny wrappers in `~/.shortcuts` to get EN/DE buttons:
 
-# trans-d.sh
-#!/usr/bin/env bash
-exec "$HOME/scripts/trans.sh" -l de "$@"
+- **trans-e.sh**
+  ```bash
+  #!/usr/bin/env bash
+  exec "$HOME/scripts/trans.sh" -l en "$@"
+  ```
 
-Then chmod +x ~/.shortcuts/trans-*.sh.
+- **trans-d.sh**
+  ```bash
+  #!/usr/bin/env bash
+  exec "$HOME/scripts/trans.sh" -l de "$@"
+  ```
+
+Then, make them executable:
+```bash
+chmod +x ~/.shortcuts/trans-*.sh
+```
+
 ---
 
-art.sh
+### `art.sh`
 
-Extracts readable article text (Readability → Pandoc → Lynx → basic strip fallback).
-Saves to: Documents/web_articles/<title>.txt
+Extracts readable article text (using Readability, Pandoc, Lynx, and a basic strip fallback).  
+**Saves to:** `Documents/web_articles/<title>.txt`
 
-Usage
-
+**Usage**
+```bash
 art.sh "https://example.com/article"
-# or: art.sh  (uses clipboard if URL omitted)
-
+# or, if URL is omitted, uses clipboard:
+art.sh
+```
 
 ---
 
-music.sh
+### `music.sh`
 
-Downloads albums/playlists/tracks via yt-dlp, converts to MP3, embeds thumbnail.
-Saves to: Music/<playlist|uploader>/<title>.mp3
+Downloads albums/playlists/tracks via `yt-dlp`, converts to MP3, and embeds the thumbnail.  
+**Saves to:** `Music/<playlist|uploader>/<title>.mp3`
 
-Usage
-
+**Usage**
+```bash
 music.sh "https://www.youtube.com/playlist?list=..."
-
+```
 
 ---
 
-stream.sh
+### `stream.sh`
 
-Record livestreams (e.g., YouTube) to MP4.
-Saves to: Videos (Ubuntu) or Movies (Termux/Android)
+Records livestreams (e.g., YouTube) to MP4.  
+**Saves to:** `Videos` (Ubuntu) or `Movies` (Termux/Android)
 
-Usage
-
+**Usage**
+```bash
 stream.sh "https://www.youtube.com/watch?v=LIVE_ID"
-
+```
 
 ---
 
-dl.sh
+### `dl.sh`
 
-Aria2c wrapper for big downloads with sane defaults.
-Saves to: Downloads/aria2c/
+A wrapper for `aria2c` for large downloads with sane defaults.  
+**Saves to:** `Downloads/aria2c/`
 
-Usage
-
+**Usage**
+```bash
 dl.sh "https://big.example/file.iso" "https://mirror/file.iso"
-
-
----
-
-🧰 Dependencies
-
-You don’t have to install them manually—setup.sh handles it.
-It installs per‑platform packages and drops the shared helper at ~/.scripts/common.sh.
-
-Termux (Android)
-
-python-yt-dlp, ffmpeg, aria2, lynx, pandoc, nodejs, termux-api, jq
-
-(optional) readability-cli via npm (installed only if npm present)
-
-
-Ubuntu
-
-yt-dlp, ffmpeg, aria2, lynx, pandoc, xdg-user-dirs, xclip, wl-clipboard, nodejs, npm, jq
-
-readability-cli via npm
-
-
+```
 
 ---
 
-🚀 Install
+## 🧰 Dependencies
 
+You don’t have to install them manually—`setup.sh` handles it.  
+It installs per‑platform packages and sets up the shared helper at `~/.scripts/common.sh`.
+
+**Termux (Android)**
+- python-yt-dlp
+- ffmpeg
+- aria2
+- lynx
+- pandoc
+- nodejs
+- termux-api
+- jq
+- (optional) readability-cli (installed via npm if npm is present)
+
+**Ubuntu**
+- yt-dlp
+- ffmpeg
+- aria2
+- lynx
+- pandoc
+- xdg-user-dirs
+- xclip
+- wl-clipboard
+- nodejs
+- npm
+- jq
+- readability-cli (installed via npm)
+
+---
+
+## 🚀 Install
+
+Clone the repository and run the setup:
+```bash
 git clone https://github.com/marx161-cmd/peoples_scripts.git
 cd peoples_scripts
 
-# Make scripts runnable
+# Make scripts executable
 chmod +x *.sh
 
-# Run setup (installs deps + ~/.scripts/common.sh)
+# Run setup (install dependencies and configure ~/.scripts/common.sh)
 ./setup.sh
+```
 
-# (Optional QoL) Add ~/scripts to PATH so you can run scripts from anywhere
+(Optional Quality of Life) Add `~/scripts` to your PATH:
+```bash
 mkdir -p ~/scripts
 cp -f trans.sh art.sh music.sh stream.sh dl.sh ~/scripts/
 if ! grep -q 'export PATH="$HOME/scripts:$PATH"' ~/.bashrc 2>/dev/null; then
   echo 'export PATH="$HOME/scripts:$PATH"' >> ~/.bashrc
   source ~/.bashrc
 fi
+```
 
-Termux storage bridge (first time only):
-
+For Termux storage bridge (first time only):
+```bash
 termux-setup-storage
-
+```
 
 ---
 
-🧪 Quick tests
+## 🧪 Quick tests
 
-# Verify helper + paths + clipboard
+Verify functionality with these commands:
+```bash
+# Verify helper, paths, and clipboard
 bash test-common.sh
 
-# Transcript (clipboard fallback)
+# Transcript (uses clipboard fallback if URL omitted)
 trans.sh -l en
+
 # Article saver
 art.sh "https://en.wikipedia.org/wiki/Bash_(Unix_shell)"
+
 # Music
 music.sh "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+
 # Livestream (when live)
 stream.sh "https://www.youtube.com/watch?v=LIVE_ID"
-# Big download
+
+# Large download
 dl.sh "https://speed.hetzner.de/1GB.bin"
-
-
----
-
-📂 Where files go (auto‑detected)
-
-Documents: ~/Documents (Ubuntu) or ~/storage/shared/Documents (Termux)
-
-Pictures:  ~/Pictures or ~/storage/shared/Pictures
-
-Music:     ~/Music or ~/storage/shared/Music
-
-Videos:    ~/Videos or ~/storage/shared/Movies
-
-Downloads: ~/Downloads or ~/storage/shared/Download
-
-
-All paths come from ~/.scripts/common.sh and must not be hardcoded.
-
+```
 
 ---
 
-⚠️ Notes
+## 📂 Where Files Go (Auto‑Detected)
 
-Clipboard on Termux requires the Termux:API app.
+- **Documents:** `~/Documents` (Ubuntu) or `~/storage/shared/Documents` (Termux)
+- **Pictures:** `~/Pictures` or `~/storage/shared/Pictures`
+- **Music:** `~/Music` or `~/storage/shared/Music`
+- **Videos:** `~/Videos` or `~/storage/shared/Movies`
+- **Downloads:** `~/Downloads` or `~/storage/shared/Download`
 
-On Wayland/X11 (Ubuntu), clipboard uses wl-paste → xclip → xsel fallback.
-
-termux-setup-storage may “rebuild links”—it never deletes your real files.
-
-
+_All paths are set in `~/.scripts/common.sh` and must not be hardcoded._
 
 ---
 
-📜 License
+## ⚠️ Notes
 
-MIT
+- Clipboard on Termux requires the Termux:API app.
+- On Wayland/X11 (Ubuntu), the clipboard uses `wl-paste` → `xclip` → `xsel` as fallback.
+- `termux-setup-storage` may “rebuild links” — it never deletes your real files.
+
+---
+
+## 📜 License
+
+Licensed under the [MIT License](LICENSE).
