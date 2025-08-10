@@ -142,22 +142,18 @@ Clone the repository and run the setup:
 ```bash
 git clone https://github.com/marx161-cmd/peoples_scripts.git
 cd peoples_scripts
-
 # Make scripts executable
 chmod +x *.sh
+./install.sh
 
-# Run setup (install dependencies and configure ~/.scripts/common.sh)
-./setup.sh
+# Advanced: You can still run setup.sh directly if you only want
+# to install dependencies without copying scripts.
 ```
 
-(Optional Quality of Life) Add `~/scripts` to your PATH:
+install.sh will add ~/scripts to your PATH automatically if it’s not already there.
+If you prefer to do it manually, add the following line to your ~/.bashrc (and restart your shell):
 ```bash
-mkdir -p ~/scripts
-cp -f trans.sh art.sh music.sh stream.sh dl.sh ~/scripts/
-if ! grep -q 'export PATH="$HOME/scripts:$PATH"' ~/.bashrc 2>/dev/null; then
-  echo 'export PATH="$HOME/scripts:$PATH"' >> ~/.bashrc
-  source ~/.bashrc
-fi
+export PATH="$HOME/scripts:$PATH"
 ```
 
 For Termux storage bridge (first time only):
