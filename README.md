@@ -10,7 +10,7 @@ for:
 - THE SANDBOX_WIP FOLDER IS NOT PART OF THE INSTALL
 
 ---
-
+![MandateofMasses](sandbox_WIP/misc/mandate_masses.gif)
 ## 📦 Included scripts
 
 ### `trans.sh`
@@ -104,6 +104,8 @@ dl.sh "https://big.example/file.iso" "https://mirror/file.iso"
 ```
 
 ---
+
+![Merkel Bomb](sandbox_WIP/misc/merkel_bomb.jpg)
 
 ## 🧰 Dependencies
 
@@ -208,7 +210,7 @@ _All paths are set in `~/.scripts/common.sh` and must not be hardcoded._
 - `termux-setup-storage` may “rebuild links” — it never deletes your real files.
 
 ---
-
+![Obama_Out](sandbox_WIP/misc/mic_drop.gif)
 ## 📜 License
 
 Licensed under the [MIT License](LICENSE).
