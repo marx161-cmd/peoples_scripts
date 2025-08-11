@@ -105,7 +105,7 @@ dl.sh "https://big.example/file.iso" "https://mirror/file.iso"
 
 ---
 
-![Merkel Bomb](sandbox_WIP/misc/merkel_bomb.jpg)
+![Merkel Bomb](sandbox_WIP/misc/merkel_fork.jpg)
 
 ## 🧰 Dependencies
 
