@@ -1,5 +1,10 @@
 # 📲 peoples_scripts
 
+> [!IMPORTANT]
+> This repo is a living utility dump, not a curated finished toolkit.
+> I use it to publish scripts that are useful to me across Termux and Linux, even when they still need cleanup or may not get immediate follow-up work.
+> Expect uneven polish, uneven maintenance cadence, and occasional scripts that are more "practical snapshot" than stable release.
+
 Cross‑platform Bash helpers that work on **Termux (Android)** and **Ubuntu/Linux**.  
 All scripts auto‑detect the platform and write to the correct user folders via a shared helper: `~/.scripts/common.sh`.
 
@@ -8,6 +13,15 @@ for:
 - Ubuntu 22.04+
 - STILL WORK IN PROGRESS | MOST SCRIPTS WILL NEED FURTHER TWEAKING
 - THE SANDBOX_WIP FOLDER IS NOT PART OF THE INSTALL
+
+## Project Status
+
+- This repository is intentionally broad and a bit messy.
+- Some scripts are daily-driver useful.
+- Some scripts are experimental and may lag behind package or platform changes.
+- I am happy to publish them anyway so the working pieces are available instead of sitting private on one machine.
+
+If you need something production-grade, read each script before trusting it blindly.
 
 ---
 ![MandateofMasses](sandbox_WIP/misc/mandate_masses.gif)
